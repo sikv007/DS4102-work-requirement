@@ -1,6 +1,5 @@
 <template>
-  <div v-if="isLoading">Loading...</div>
-  <div v-else :class="isDarkMode.container">
+  <div :class="isDarkMode.container">
     <the-header></the-header>
     <main>
       <router-view v-slot="{ Component }">
@@ -14,23 +13,22 @@
 </template>
 
 <script>
-import { useState } from "./services/state";
-import TheHeader from "./components/shared/layout/TheHeader.vue";
-import TheFooter from "./components/shared/layout/TheFooter.vue";
+import { watch } from "vue";
+import TheHeader from "./components/shared/TheHeader.vue";
+import TheFooter from "./components/shared/TheFooter.vue";
+import { useState } from "./services/stateServices";
 export default {
-  components: {
-    TheHeader,
-    TheFooter,
-  },
+  components: { TheHeader, TheFooter },
   setup() {
     const state = useState();
-    state.getState();
     state.setState();
-    state.watchState();
-    console.log(state.isLoading);
+    
+    watch(state.state, (newValue) => {
+      localStorage.setItem("state", JSON.stringify(newValue));
+    });
+
     return {
       isDarkMode: state.isDarkMode,
-      isLoading: state.isLoading,
     };
   },
 };
@@ -50,12 +48,6 @@ export default {
 .route-enter-active,
 .route-leave-active {
   transition: all 0.5s ease;
-}
-.hide-pokemon-light {
-  filter: brightness(0);
-}
-.hide-pokemon-dark {
-  filter: brightness(20) saturate(0);
 }
 .hide-pokemon-light {
   filter: brightness(0);

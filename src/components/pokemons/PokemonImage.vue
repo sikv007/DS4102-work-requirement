@@ -11,9 +11,12 @@ export default {
   setup(props) {
     const getImage = () => {
       try {
-        return require(`../../assets/pokemons/${props.path}.png`);
+        return new URL(
+          `../../assets/pokemons/${props.path}.png`,
+          import.meta.url
+        ).href;
       } catch {
-        return require(`../../assets/pokeball.png`);
+        return new URL(`../../assets/pokeball.png`, import.meta.url).href;
       }
     };
     return {
