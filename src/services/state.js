@@ -1,9 +1,9 @@
-import { reactive, watch } from "vue";
+import { computed, reactive, watch } from "vue";
 
 const state = reactive({
   pokemons: [],
   darkMode: false,
-  isLoading: false,
+  loading: false,
 });
 
 const setState = () => {
@@ -15,12 +15,13 @@ const setState = () => {
 };
 
 const getState = async () => {
-  state.isLoading = true;
+  state.loading = true;
   const res = await fetch(
     "https://pokemon-f9013-default-rtdb.firebaseio.com/pokemons.json"
   );
   const data = await res.json();
-  console.log(data);
+  state.pokemons = data;
+  state.loading = false;
 };
 
 const watchState = () => {
@@ -33,6 +34,28 @@ const setDarkMode = () => {
   state.darkMode = !state.darkMode;
 };
 
+const isLoading = computed(() => state.loading);
+
+const isDarkMode = computed(() => {
+  return state.darkMode
+    ? {
+        container: { "bg-dark": true, "text-light": true },
+        button: {
+          class: { "bi-brightness-high-fill": true },
+          text: "Light mode",
+        },
+        card: { "bg-black": true },
+        icon: { "text-light": true },
+        form: { "text-light": true, "bg-black": true },
+      }
+    : {
+        container: { "bg-light": true, "text-dark": true },
+        button: { class: { "bi-moon-fill": true }, text: "Dark mode" },
+        card: { "bg-white": true },
+        icon: { "text-dark": true },
+      };
+});
+
 export const useState = () => {
   return {
     state,
@@ -40,5 +63,7 @@ export const useState = () => {
     setDarkMode,
     getState,
     watchState,
+    isDarkMode,
+    isLoading,
   };
 };
