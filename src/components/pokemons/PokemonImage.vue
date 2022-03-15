@@ -11,10 +11,7 @@ export default {
   setup(props) {
     const getImage = () => {
       try {
-        return new URL(
-          `../../assets/pokemons/${props.path}.png`,
-          import.meta.url
-        ).href;
+        return `https://res.cloudinary.com/dplcm73vn/image/upload/v1644172218/pokemons/${props.path}.png`
       } catch {
         return new URL(`../../assets/pokeball.png`, import.meta.url).href;
       }
